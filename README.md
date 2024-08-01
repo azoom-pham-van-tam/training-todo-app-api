@@ -1,1 +1,1 @@
-# training-todo-app-api
+# training-todo-app
