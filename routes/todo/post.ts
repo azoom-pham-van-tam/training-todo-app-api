@@ -11,6 +11,50 @@ const createTodoSchema = z.object({
     .refine(value => value == TODO_TYPE.DONE || value == TODO_TYPE.TODO)
 })
 
+/**
+ * @swagger
+ * /todo:
+ *   post:
+ *     summary: Create a new todo item
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               description:
+ *                 type: string
+ *               status:
+ *                 type: number
+ *             example:
+ *               description: "string"
+ *               status: 0
+ *     responses:
+ *       200:
+ *         description: Todo created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: number
+ *                     example: 1
+ *                   description:
+ *                     type: string
+ *                     example: "string"
+ *                   status:
+ *                     type: number
+ *                     example: 0
+ *       400:
+ *         description: Bad request, invalid data provided
+ *       500:
+ *         description: Internal server error
+ */
+
 export default (req: Request, res: Response) => {
   validateInput({ schema: createTodoSchema, requestData: req.body })
 
