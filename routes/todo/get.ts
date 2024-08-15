@@ -1,17 +1,21 @@
+import { z } from 'zod'
 import { Request, Response } from 'express'
 import { TODO_LIST_DATA, TODO_TYPE } from '@root/constants'
+import { validateInput } from '@root/helper/validate'
+import { getTodoList } from '@root/helper/todo'
+
+const getTodoListSchema = z.object({
+  type: z.coerce
+    .number()
+    .refine(value => value == TODO_TYPE.DONE || value == TODO_TYPE.TODO)
+})
 
 export default (req: Request, res: Response) => {
+  validateInput({ schema: getTodoListSchema, requestData: req.query })
+
   const type = Number(req.query.type)
-  if (!Object.values(TODO_TYPE).includes(type)) {
-    throw new Error('TYPE IS NOT EXIST')
-  }
 
-  if (type === TODO_TYPE.DONE) {
-    return res.send(
-      TODO_LIST_DATA.filter(todo => todo.status === TODO_TYPE.DONE)
-    )
-  }
+  const todoListData = getTodoList({ type, todoListData: TODO_LIST_DATA })
 
-  return res.send(TODO_LIST_DATA.filter(todo => todo.status === TODO_TYPE.TODO))
+  return res.send(todoListData)
 }
